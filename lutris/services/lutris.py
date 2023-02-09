@@ -148,6 +148,29 @@ def download_lutris_media(slug):
         download_media({slug: cover_url}, LutrisCoverart())
 
 
+def steamgriddb_download_media(slug):
+    """Download all media types for a single lutris game via SteamGridDB"""
+    url = settings.SITE_URL + "/api/games/%s" % slug
+    request = http.Request(url)
+    try:
+        response = request.get()
+    except http.HTTPError as ex:
+        logger.debug("Unable to load %s: %s", slug, ex)
+        return
+    response_data = response.json
+    icon_url = response_data.get("icon_url")
+    if icon_url:
+        download_media({slug: icon_url}, LutrisIcon())
+
+    banner_url = response_data.get("banner_url")
+    if banner_url:
+        download_media({slug: banner_url}, LutrisBanner())
+
+    cover_url = response_data.get("coverart")
+    if cover_url:
+        download_media({slug: cover_url}, LutrisCoverart())
+
+
 def sync_media():
     """Downlad all missing media"""
     banners_available = {fn.split(".")[0] for fn in os.listdir(settings.BANNER_PATH)}

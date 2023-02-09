@@ -13,6 +13,7 @@ class PreferencesBox(VBox):
         "show_tray_icon": _("Show Tray Icon"),
         "dark_theme": _("Use dark theme (requires dark theme variant for Gtk)"),
         "discord_rpc": _("Enable Discord Rich Presence for Available Games"),
+        "sgdb_integration": _("Enable SteamGridDB integration"),
     }
 
     def _get_section_label(self, text):
@@ -38,6 +39,8 @@ class PreferencesBox(VBox):
             list_box_row.set_activatable(False)
             list_box_row.add(self._get_setting_box(setting_key, label))
             listbox.add(list_box_row)
+        listbox.add(self.sgdb_box())
+        listbox.show_all()
 
     def _get_setting_box(self, setting_key, label):
         box = Gtk.Box(
@@ -50,8 +53,6 @@ class PreferencesBox(VBox):
         label.set_alignment(0, 0.5)
         box.pack_start(label, True, True, 12)
         checkbox = Gtk.Switch(visible=True)
-        if settings.read_setting(setting_key).lower() == "true":
-            checkbox.set_active(True)
         checkbox.connect("state-set", self._on_setting_change, setting_key)
         box.pack_start(checkbox, False, False, 12)
         return box
@@ -67,3 +68,21 @@ class PreferencesBox(VBox):
             application = Gio.Application.get_default()
             if application.window.get_visible():
                 application.set_tray_icon()
+
+    def sgdb_box(self):
+        """Adds the SteamGridDB input box for API Key"""
+        box = Gtk.Box()
+        input = Gtk.Entry()
+        input.set_placeholder_text(settings.read_setting("sgdb_api_key") if len(
+            settings.read_setting("sgdb_api_key")) > 0 else "SteamGridDB API Key")
+        input.set_max_length(25)
+        input.connect("activate", lambda widget: self.save_api_key(widget))
+        box.pack_start(input, True, True, 0)
+        save_button = Gtk.Button(label="Save")
+        save_button.connect("clicked", lambda widget: self.save_api_key(input))
+        box.pack_start(save_button, False, False, 0)
+        return box
+
+    def save_api_key(self, input):
+        key = input.get_text()
+        settings.write_setting("sgdb_api_key", key)
