@@ -15,6 +15,8 @@ except ImportError:
 
 ICON_SIZE = (32, 32)
 BANNER_SIZE = (184, 69)
+COVER_SIZE = (264, 352)
+# Steam cover values are 270,360 from base 600,900
 
 
 def get_main_window(widget):

@@ -15,7 +15,7 @@ from lutris.game import Game
 from lutris.gui.dialogs import NoticeDialog
 from lutris.gui.dialogs.webconnect_dialog import DEFAULT_USER_AGENT, WebConnectDialog
 from lutris.gui.views.media_loader import download_media
-from lutris.gui.widgets.utils import BANNER_SIZE, ICON_SIZE
+from lutris.gui.widgets.utils import BANNER_SIZE, ICON_SIZE, COVER_SIZE
 from lutris.installer import get_installers
 from lutris.services.service_media import ServiceMedia
 from lutris.util import system
@@ -55,7 +55,7 @@ class LutrisIcon(LutrisBanner):
 
 class LutrisCoverart(ServiceMedia):
     service = 'lutris'
-    size = (264, 352)
+    size = COVER_SIZE
     file_pattern = "%s.jpg"
     file_format = "jpeg"
     dest_path = settings.COVERART_PATH
@@ -64,6 +64,10 @@ class LutrisCoverart(ServiceMedia):
     @property
     def config_ui_size(self):
         return (66, 88)
+
+    def __init__(self):
+        if settings.read_setting("sgdb_integration") == "True":
+            self.COVER_SIZE = (270, 360)
 
 
 class LutrisCoverartMedium(LutrisCoverart):
