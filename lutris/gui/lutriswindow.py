@@ -30,7 +30,7 @@ from lutris.gui.widgets.utils import load_icon_theme, open_uri
 # pylint: disable=no-member
 from lutris.services.base import BaseService
 from lutris.services.lutris import LutrisService
-from lutris.util import datapath
+from lutris.util import datapath, sgdb_dl_all
 from lutris.util.jobs import AsyncCall
 from lutris.util.log import logger
 from lutris.util.system import update_desktop_icons
@@ -762,19 +762,7 @@ class LutrisWindow(Gtk.ApplicationWindow,
     @GtkTemplate.Callback
     def on_sgdb_dl_activate(self, *_args):
         """Start downloading covers from SGDB and open a small progress bar popup."""
-        """Download and install a runner version"""
-        runner = row.runner
-        row.install_progress.set_fraction(0.0)
-        dest_path = self.get_dest_path(runner)
-        url = runner[self.COL_URL]
-        if not url:
-            ErrorDialog(_("Version %s is not longer available") % runner[self.COL_VER])
-            return
-        downloader = Downloader(url, dest_path, overwrite=True)
-        GLib.timeout_add(100, self.get_progress, downloader, row)
-        self.installing[runner[self.COL_VER]] = downloader
-        downloader.start()
-        self.update_listboxrow(row)
+        sgdb_dl_all()
 
     def on_toggle_viewtype(self, *args):
         view_type = "list" if self.current_view_type == "grid" else "grid"
