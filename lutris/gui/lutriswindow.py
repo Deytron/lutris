@@ -141,6 +141,7 @@ class LutrisWindow(Gtk.ApplicationWindow,
 
         actions = {
             "add-game": Action(self.on_add_game_button_clicked),
+            "sgdb-dl-all": Action(self.on_sgdb_dl_activate),
             "preferences": Action(self.on_preferences_activate),
             "about": Action(self.on_about_clicked),
             "show-installed-only": Action(  # delete?
@@ -757,6 +758,23 @@ class LutrisWindow(Gtk.ApplicationWindow,
         """Add a new game manually with the AddGameDialog."""
         self.application.show_window(AddGamesWindow)
         return True
+
+    @GtkTemplate.Callback
+    def on_sgdb_dl_activate(self, *_args):
+        """Start downloading covers from SGDB and open a small progress bar popup."""
+        """Download and install a runner version"""
+        runner = row.runner
+        row.install_progress.set_fraction(0.0)
+        dest_path = self.get_dest_path(runner)
+        url = runner[self.COL_URL]
+        if not url:
+            ErrorDialog(_("Version %s is not longer available") % runner[self.COL_VER])
+            return
+        downloader = Downloader(url, dest_path, overwrite=True)
+        GLib.timeout_add(100, self.get_progress, downloader, row)
+        self.installing[runner[self.COL_VER]] = downloader
+        downloader.start()
+        self.update_listboxrow(row)
 
     def on_toggle_viewtype(self, *args):
         view_type = "list" if self.current_view_type == "grid" else "grid"

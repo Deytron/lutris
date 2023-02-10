@@ -504,6 +504,20 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">False</property>
+            <property name="action-name">win.sgdb-dl-all</property>
+            <property name="text" translatable="yes">Download covers from SGDB</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">False</property>
             <property name="action-name">win.preferences</property>
             <property name="text" translatable="yes">Preferences</property>
           </object>
