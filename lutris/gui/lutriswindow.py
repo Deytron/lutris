@@ -30,7 +30,8 @@ from lutris.gui.widgets.utils import load_icon_theme, open_uri
 # pylint: disable=no-member
 from lutris.services.base import BaseService
 from lutris.services.lutris import LutrisService
-from lutris.util import datapath, sgdb_dl_all
+from lutris.util import datapath
+from lutris.util.sgdb_dl_all import sgdb_dl_all
 from lutris.util.jobs import AsyncCall
 from lutris.util.log import logger
 from lutris.util.system import update_desktop_icons
@@ -141,7 +142,8 @@ class LutrisWindow(Gtk.ApplicationWindow,
 
         actions = {
             "add-game": Action(self.on_add_game_button_clicked),
-            "sgdb-dl-all": Action(self.on_sgdb_dl_activate),
+            "sgdb-dl-ban": Action(self.on_sgdb_dl_cov_activate),
+            "sgdb-dl-cov": Action(self.on_sgdb_dl_ban_activate),
             "preferences": Action(self.on_preferences_activate),
             "about": Action(self.on_about_clicked),
             "show-installed-only": Action(  # delete?
@@ -760,9 +762,14 @@ class LutrisWindow(Gtk.ApplicationWindow,
         return True
 
     @GtkTemplate.Callback
-    def on_sgdb_dl_activate(self, *_args):
+    def on_sgdb_dl_cov_activate(self, *_args):
+        """Start downloading banners from SGDB and open a small progress bar popup."""
+        sgdb_dl_all("coverart_big")
+        
+    @GtkTemplate.Callback
+    def on_sgdb_dl_ban_activate(self, *_args):
         """Start downloading covers from SGDB and open a small progress bar popup."""
-        sgdb_dl_all()
+        sgdb_dl_all("banner")
 
     def on_toggle_viewtype(self, *args):
         view_type = "list" if self.current_view_type == "grid" else "grid"

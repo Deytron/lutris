@@ -16,6 +16,7 @@ except ImportError:
 ICON_SIZE = (32, 32)
 BANNER_SIZE = (184, 69)
 COVER_SIZE = (264, 352)
+# Steam cover values are 368,172 from base 920,430
 # Steam cover values are 270,360 from base 600,900
 
 
